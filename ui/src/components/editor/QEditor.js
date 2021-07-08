@@ -362,6 +362,7 @@ export default defineComponent({
         if (contentRef.value !== null && offsetBottom !== void 0) {
           contentRef.value.scrollTop = contentRef.value.scrollHeight - offsetBottom
         }
+        this.$emit('focus')
       })
       emit('focus', e)
     }
