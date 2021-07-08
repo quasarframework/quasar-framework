@@ -62,11 +62,11 @@ There are some CSS classes that will help you customize the drawer when dealing 
 
 You can also write your own CSS classes based on the fact that QLayoutDrawer has `q-drawer--standard` CSS class when in "normal" mode and `q-drawer--mini` when in "mini" mode. Also, when drawer is in "mobile" behavior, it gets `q-drawer--mobile` CSS class.
 
-#### Mouseover/mouseout trigger
+#### Mouseover/mouseleave trigger
 
 Consider using QItems with routing props (like `to`) below. For demoing purposes these props have not been added as it would break the UMD version.
 
-<doc-example title="Mini-mode with mouseover/mouseout trigger" file="QDrawer/MiniMouseEvents" />
+<doc-example title="Mini-mode with mouseover/mouseleave trigger" file="QDrawer/MiniMouseEvents" />
 
 #### Mini to overlay
 

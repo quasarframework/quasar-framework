@@ -14,7 +14,7 @@
 
         :mini="miniState"
         @mouseover="miniState = false"
-        @mouseout="miniState = true"
+        @mouseleave="miniState = true"
         mini-to-overlay
 
         :width="200"

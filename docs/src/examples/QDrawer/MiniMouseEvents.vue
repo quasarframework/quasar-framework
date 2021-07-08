@@ -14,7 +14,7 @@
 
         :mini="miniState"
         @mouseover="miniState = false"
-        @mouseout="miniState = true"
+        @mouseleave="miniState = true"
 
         :width="200"
         :breakpoint="500"

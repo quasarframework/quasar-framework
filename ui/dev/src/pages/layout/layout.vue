@@ -136,7 +136,7 @@
 
       <!--
         @mouseover="leftMini = false"
-        @mouseout="leftMini = true"
+        @mouseleave="leftMini = true"
         ...or
         @click.capture="e => {
           if (leftMini) {
