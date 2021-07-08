@@ -1,0 +1,157 @@
+<template>
+        <div class="q-pa-md" style="max-width: 300px">
+          <div class="q-gutter-md">
+            <q-select
+              class="q-pa-xs q-ma-xs no-wrap"
+              outlined
+              :value="model"
+              :options="options"
+              separator
+              use-input
+              dense
+              options-dense
+              @filter="filterFn"
+              options-selected-class="text-dark-blue"
+              style="width:300px"
+              @input="handleChange"
+            >
+              <q-item
+                slot="option"
+                slot-scope="props"
+                style="padding: 2px 2px !important; min-height:20px !important"
+                v-bind="props.itemProps"
+                v-on="props.itemEvents"
+              >
+                <q-item-section>
+                  <div style="width:785px" class="row text-subtitle2">
+                    <div
+                      style="width:250px"
+                      class="text-bold text-primary"
+                    >&nbsp;&nbsp;{{ props.opt.label }}</div>
+                    <div style="width:100px" class="text-bold">{{ props.opt.tel }}</div>
+                    <div style="width:200px">{{ props.opt.street }}</div>
+                    <div style="width:150px">{{ props.opt.city }}</div>
+                    <div style="width:35px">{{ props.opt.state }}</div>
+                    <div style="width:50px">{{ props.opt.zipcode }}</div>
+                  </div>
+                </q-item-section>
+              </q-item>
+            </q-select>
+          </div>
+        </div>
+</template>
+
+<script>
+export default {
+  mounted() {
+    console.log("the Store", this.$store);
+  },
+  data() {
+    return {
+      options: [],
+      model: null,
+      clients: [
+        {
+          label: "SMITH JOHN",
+          value: 55364,
+          tel: "646-287-9999",
+          street: "111 6TH STREET APT 2",
+          city: "NEW YORK",
+          state: "NY",
+          zipcode: "10009"
+        },
+        {
+          label: "SMITH TEDDY",
+          value: 63302,
+          tel: "347-602-9999",
+          street: "111 CLIFTON AVENUE",
+          city: "STATEN ISLAND",
+          state: "NY",
+          zipcode: "10305"
+        },
+        {
+          label: "PERRY HAYDEE J",
+          value: 47785,
+          tel: "718-284-9999",
+          street: "111 BEVERLY RD",
+          city: "BROOKLYN",
+          state: "NY",
+          zipcode: "11226"
+        },
+        {
+          label: "FERMAN JOHN",
+          value: 9449,
+          tel: "201-441-9999",
+          street: "111 MADISON STREET ",
+          city: "WEST NEW YORK",
+          state: "NJ",
+          zipcode: "07093"
+        },
+        {
+          label: "FERMIN LAURA",
+          value: 57855,
+          tel: "347-222-9999",
+          street: "111 MADISON STREET",
+          city: "BROOKLYN",
+          state: "NY",
+          zipcode: "11232"
+        },
+        {
+          label: "FERMIN TODD",
+          value: 32250,
+          tel: "718-521-9999",
+          street: "111 PARK AVENUE",
+          city: "BROOKLYN",
+          state: "NY",
+          zipcode: "11206"
+        },
+        {
+          label: "MICHAEL MILAGROS",
+          value: 1532,
+          tel: "718-310-9999",
+          street: "111 51 ST APT 6",
+          city: "BROOKLYN",
+          state: "NY",
+          zipcode: "11220"
+        }
+      ]
+    };
+  },
+  methods: {
+    handleChange(newVal) {
+      this.model = newVal.label;
+      console.log(newVal.value);
+    },
+    filterFn(val, update, abort) {
+      if (val.length < 3) {
+        abort();
+        return;
+      }
+      let needle = val.toLowerCase();
+      update(() => {
+        this.options = this.clients.filter(function(item) {
+          return (
+            item.label.toLowerCase().includes(needle) ||
+            item.tel.includes(needle) ||
+            item.street.toLowerCase().includes(needle) ||
+            item.city.toLowerCase().includes(needle) ||
+            item.state.toLowerCase().includes(needle) ||
+            item.zipcode.includes(needle)
+          );
+        });
+      });
+    }
+  }
+};
+</script>
+
+<style>
+.q-item:nth-child(even) {
+  background-color: #e0f2f1 !important;
+}
+.q-item:hover {
+  color: #ff5722 !important;
+  /*background-color: #607d8b  !important; */
+  border-color: #0d47a1 !important;
+}
+</style>
