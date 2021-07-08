@@ -271,11 +271,48 @@ module.exports = class Extension {
     return prompts
   }
 
+  // extracts extension params defined in its package.json file
+  params () {
+    try {
+      // reads package.json key: 'quasar.extension' if defined.
+      // execSync returns a buffer
+      const paramsBuffer = require('child_process').execSync(
+        `npm view --json ${this.packageFullName} quasar.extension`
+      )
+
+      // parse the buffer and return an object
+      return JSON.parse(paramsBuffer)
+    } catch (err) {
+      // when the extension is not published yet to npm, the above will result
+      // in an error.
+      return {}
+    }
+  }
+
+  getInstallFlags () {
+    const params = this.params()
+
+    // if install flags are not defined, we target devDependencies as default
+    const npmInstallFlags = 'npmInstallFlags' in params
+      ? params.npmInstallFlags
+      : '--save-dev'
+    const yarnAddFlags = 'yarnAddFlags' in params
+      ? params.yarnAddFlags
+      : '--dev'
+
+    return {
+      npm: npmInstallFlags,
+      yarn: yarnAddFlags
+    }
+  }
+
   __installPackage () {
+    const flags = this.getInstallFlags()
     const nodePackager = require('../helpers/node-packager')
+    // if flags are specified as empty strings, we don't concatenate
     const cmdParam = nodePackager === 'npm'
-      ? ['install', '--save-dev']
-      : ['add', '--dev']
+      ? flags.npm === '' ? ['install'] : ['install'].concat(flags.npm)
+      : flags.yarn === '' ? ['add'] : ['add'].concat(flags.yarn)
 
     log(`Retrieving "${this.packageFullName}"...`)
     spawnSync(
@@ -287,10 +324,12 @@ module.exports = class Extension {
   }
 
   __uninstallPackage () {
+    const flags = this.getInstallFlags()
     const nodePackager = require('../helpers/node-packager')
+    // if flags are specified as empty strings, we don't concatenate
     const cmdParam = nodePackager === 'npm'
-      ? ['uninstall', '--save-dev']
-      : ['remove']
+      ? flags.npm === '' ? ['uninstall'] : ['uninstall'].concat(flags.npm)
+      : flags.yarn === '' ? ['remove'] : ['remove'].concat(flags.yarn)
 
     log(`Uninstalling "${this.packageName}"...`)
     spawnSync(
