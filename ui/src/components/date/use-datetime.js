@@ -1,9 +1,10 @@
 import { computed } from 'vue'
 
 import { toJalaali } from '../../utils/private/date-persian.js'
+import { GregorianToHijri } from '../../utils/private/date-hijri.js'
 import { pad } from '../../utils/format.js'
 
-const calendars = [ 'gregorian', 'persian' ]
+const calendars = [ 'gregorian', 'persian', 'islamic' ]
 
 export const useDatetimeProps = {
   modelValue: {
@@ -70,6 +71,14 @@ export default function (props, $q) {
         year: jDate.jy,
         month: jDate.jm,
         day: jDate.jd
+      }
+    }
+    else if (props.calendar === 'islamic') {
+      const iDate = GregorianToHijri(d)
+      return {
+        year: iDate.iy,
+        month: iDate.im,
+        day: iDate.id
       }
     }
 

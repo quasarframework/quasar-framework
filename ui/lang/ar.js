@@ -1,3 +1,6 @@
+const days = 'الأحد_الإثنين_الثلاثاء_الأربعاء_الخميس_الجمعة_السبت'.split('_')
+const monthsShort = 'محرم_صفر_ربيع ١_ربيع ٢_جمادى ١_جمادى ٢_رجب_شعبان_رمضان_شوال_ذو القعدة_ذو الحجة'.split('_')
+
 export default {
   isoName: 'ar',
   nativeName: 'العربية',
@@ -18,10 +21,11 @@ export default {
     refresh: 'تحديث'
   },
   date: {
-    days: 'الأحد_الإثنين_الثلاثاء_الأربعاء_الخميس_الجمعة_السبت'.split('_'),
+    days: days,
     daysShort: 'أحد_إثن_ثلا_أرب_خمي_جمع_سبت'.split('_'),
-    months: 'يناير_فبراير_مارس_أبريل_مايو_يونيو_يوليو_أغسطس_سبتمبر_أكتوبر_نوفمبر_ديسمبر'.split('_'),
-    monthsShort: 'ينا_فبر_مار_أبر_ماي_يون_يول_أغس_سبت_أكت_نوف_ديس'.split('_'),
+    months: 'محرم_صفر_ربيع الأول_ربيع الثاني_جمادى الأولى_جمادى الآخرة_رجب_شعبان_رمضان_شوال_ذو القعدة_ذو الحجة'.split('_'),
+    monthsShort: monthsShort,
+    headerTitle: (date, model) => `${ days[ date.getDay() ] }، ${ model.day } ${ monthsShort[ model.month - 1 ] }`,
     firstDayOfWeek: 6, // 0-6, 0 - Sunday, 1 Monday, ...
     format24h: false,
     pluralDay: 'أيام'

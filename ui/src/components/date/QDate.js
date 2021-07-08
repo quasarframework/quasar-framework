@@ -11,6 +11,7 @@ import { hSlot } from '../../utils/private/render.js'
 import { formatDate, __splitDate, getDateDiff } from '../../utils/date.js'
 import { pad } from '../../utils/format.js'
 import { jalaaliMonthLength, toGregorian } from '../../utils/private/date-persian.js'
+import { hijriMonthLength, hijriToGregorian } from '../../utils/private/date-hijri.js'
 
 const yearsInterval = 20
 const views = [ 'Calendar', 'Years', 'Months' ]
@@ -163,34 +164,49 @@ export default defineComponent({
         .filter(range => range.from.dateHash !== null && range.to.dateHash !== null && range.from.dateHash < range.to.dateHash)
     })
 
-    const getNativeDateFn = computed(() => (
-      props.calendar !== 'persian'
-        ? model => new Date(model.year, model.month - 1, model.day)
-        : model => {
+    const getNativeDateFn = computed(() => {
+      if (props.calendar === 'persian') {
+        return model => {
           const gDate = toGregorian(model.year, model.month, model.day)
           return new Date(gDate.gy, gDate.gm - 1, gDate.gd)
         }
-    ))
+      }
+      else if (props.calendar === 'islamic') {
+        return model => {
+          const gDate = hijriToGregorian(model.year, model.month, model.day)
+          return new Date(gDate.gy, gDate.gm - 1, gDate.gd)
+        }
+      }
+      else {
+        return model => new Date(model.year, model.month - 1, model.day)
+      }
+    })
 
-    const encodeObjectFn = computed(() => (
-      props.calendar === 'persian'
-        ? getDayHash
-        : (date, mask, locale) => formatDate(
-            new Date(
-              date.year,
-              date.month - 1,
-              date.day,
-              date.hour,
-              date.minute,
-              date.second,
-              date.millisecond
-            ),
-            mask === void 0 ? innerMask.value : mask,
-            locale === void 0 ? innerLocale.value : locale,
+    const encodeObjectFn = computed(() => {
+      if (props.calendar === 'persian') {
+        return getDayHash
+      }
+      else if (props.calendar === 'islamic') {
+        return getDayHash
+      }
+      else {
+        return (date, mask, locale) => formatDate(
+          new Date(
             date.year,
-            date.timezoneOffset
-          )
-    ))
+            date.month - 1,
+            date.day,
+            date.hour,
+            date.minute,
+            date.second,
+            date.millisecond
+          ),
+          mask === void 0 ? innerMask.value : mask,
+          locale === void 0 ? innerLocale.value : locale,
+          date.year,
+          date.timezoneOffset
+        )
+      }
+    })
 
     const daysInModel = computed(() =>
       daysModel.value.length + rangeModel.value.reduce(
@@ -305,9 +321,15 @@ export default defineComponent({
 
     const daysInMonth = computed(() => {
       const date = viewModel.value
-      return props.calendar !== 'persian'
-        ? (new Date(date.year, date.month, 0)).getDate()
-        : jalaaliMonthLength(date.year, date.month)
+      if (props.calendar === 'persian') {
+        return jalaaliMonthLength(date.year, date.month)
+      }
+      else if (props.calendar === 'islamic') {
+        return hijriMonthLength(date.year, date.month)
+      }
+      else {
+        return (new Date(date.year, date.month, 0)).getDate()
+      }
     })
 
     const evtColor = computed(() => (
@@ -510,11 +532,7 @@ export default defineComponent({
       let date, endDay
       const { year, month } = viewModel.value
 
-      if (props.calendar !== 'persian') {
-        date = new Date(year, month - 1, 1)
-        endDay = (new Date(year, month - 1, 0)).getDate()
-      }
-      else {
+      if (props.calendar === 'persian') {
         const gDate = toGregorian(year, month, 1)
         date = new Date(gDate.gy, gDate.gm - 1, gDate.gd)
         let prevJM = month - 1
@@ -524,6 +542,21 @@ export default defineComponent({
           prevJY--
         }
         endDay = jalaaliMonthLength(prevJY, prevJM)
+      }
+      else if (props.calendar === 'islamic') {
+        const gDate = hijriToGregorian(year, month, 1)
+        date = new Date(gDate.gy, gDate.gm - 1, gDate.gd)
+        let prevIM = month - 1
+        let prevIY = year
+        if (prevIM === 0) {
+          prevIM = 12
+          prevIY--
+        }
+        endDay = hijriMonthLength(prevIY, prevIM)
+      }
+      else {
+        date = new Date(year, month - 1, 1)
+        endDay = (new Date(year, month - 1, 0)).getDate()
       }
 
       return {
@@ -767,7 +800,7 @@ export default defineComponent({
     }
 
     function getMask () {
-      return props.calendar === 'persian' ? 'YYYY/MM/DD' : props.mask
+      return (props.calendar === 'persian' || props.calendar === 'islamic') ? 'YYYY/MM/DD' : props.mask
     }
 
     function decodeString (date, mask, locale) {
@@ -940,9 +973,13 @@ export default defineComponent({
         date.year = viewModel.value.year
         date.month = viewModel.value.month
 
-        const maxDay = props.calendar !== 'persian'
-          ? (new Date(date.year, date.month, 0)).getDate()
-          : jalaaliMonthLength(date.year, date.month)
+        const maxDay = props.calendar === 'persian'
+          ? jalaaliMonthLength(date.year, date.month)
+          : (
+              props.calendar === 'islamic'
+                ? hijriMonthLength(date.year, date.month)
+                : (new Date(date.year, date.month, 0)).getDate()
+            )
 
         date.day = Math.min(Math.max(1, date.day), maxDay)
 
@@ -1204,24 +1241,24 @@ export default defineComponent({
             }, days.value.map(day => h('div', { class: day.classes }, [
               day.in === true
                 ? h(
-                    QBtn, {
-                      class: day.today === true ? 'q-date__today' : '',
-                      dense: true,
-                      flat: day.flat,
-                      unelevated: day.unelevated,
-                      color: day.color,
-                      textColor: day.textColor,
-                      label: day.i,
-                      tabindex: tabindex.value,
-                      ...getCache('day#' + day.i, {
-                        onClick: () => { onDayClick(day.i) },
-                        onMouseover: () => { onDayMouseover(day.i) }
-                      })
-                    },
-                    day.event !== false
-                      ? () => h('div', { class: 'q-date__event bg-' + day.event })
-                      : null
-                  )
+                  QBtn, {
+                    class: day.today === true ? 'q-date__today' : '',
+                    dense: true,
+                    flat: day.flat,
+                    unelevated: day.unelevated,
+                    color: day.color,
+                    textColor: day.textColor,
+                    label: day.i,
+                    tabindex: tabindex.value,
+                    ...getCache('day#' + day.i, {
+                      onClick: () => { onDayClick(day.i) },
+                      onMouseover: () => { onDayMouseover(day.i) }
+                    })
+                  },
+                  day.event !== false
+                    ? () => h('div', { class: 'q-date__event bg-' + day.event })
+                    : null
+                )
                 : h('div', '' + day.i)
             ]))))
           ])
