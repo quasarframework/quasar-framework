@@ -146,6 +146,12 @@ You can dynamically load new options when scroll reaches the end:
 
 ## Filtering and autocomplete
 
+### Understanding the difference
+
+The intended difference between a filtering QSelect and an autocomplete QSelect is offering the user a set of options that could be the full intended text to be entered (autocomplete), or removing options in the selection according to the input by the user (filter).
+
+From a technical standpoint for autocomplete, the v-model of QSelect is broken up into `:value` and `@input-value` so that a method can be triggered by the user's input. That method is then used to "gather" options that would match and complete what the user might be wanting to enter. 
+
 ### Native attributes with `use-input`
 
 All the attributes set on QSelect that are not in the list of props in the API will be passed to the native input field used (please check `use-input` prop description first to understand what it does) for filtering / autocomplete / adding new value. Some examples: autocomplete, placeholder.
