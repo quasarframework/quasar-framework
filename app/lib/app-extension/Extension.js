@@ -125,7 +125,8 @@ module.exports = class Extension {
 
   isInstalled () {
     try {
-      require.resolve(this.packageName  + '/src/index', {
+      const pkgSrc = this.__getPkgSrc()
+      require.resolve(`${this.packageName}/${pkgSrc}/index`, {
         paths: [ appPaths.appDir ]
       })
     }
@@ -301,11 +302,18 @@ module.exports = class Extension {
     )
   }
 
+  __getPkgSrc () {
+    const pkg = require.resolve(this.packageName + `/package.json`, {
+      paths: [ appPaths.appDir ]
+    })
+    return require(pkg).main.split('/')[0]
+  }
+
   __getScript (scriptName, fatalError) {
     let script
-
+    const pkgSrc = this.__getPkgSrc()
     try {
-      script = require.resolve(this.packageName + '/src/' + scriptName, {
+      script = require.resolve(`${this.packageName}/${pkgSrc}/${scriptName}`, {
         paths: [ appPaths.appDir ]
       })
     }
