@@ -118,6 +118,10 @@ Here is another example where we add a QToggle to each option. The possibilities
 
 <doc-example title="Object options" file="QSelect/OptionQToggle" />
 
+Here is another example where we somewhat emulate native html `optgroup` with some creative license.
+
+<doc-example title="Option group" file="QSelect/OptionGroup" />
+
 By default, when there are no options, the menu won't appear. But you can customize this scenario and specify what the menu should display.
 
 <doc-example title="No options slot" file="QSelect/OptionNoneSlot" />
