@@ -77,6 +77,10 @@ setup () {
 
 <doc-example title="On custom element" file="AppFullscreen/Targeted" />
 
+::: tip
+When requesting fullscreen on a custom element, Quasar will append div elements as direct children to the target for q-menu, q-tooltip, and q-notification components. When requesting fullscreen on some components such as a q-card, these added children divs may interfere with the default styling of the target element. It is recommended to wrap the target you wish to fullscreen with a container div, and request fullscreen on that wrapper instead.
+:::
+
 ::: warning
 On some phones this will have little effect:
 * For example, on Samsung S4, when App goes into fullscreen, the top bar will slide up but still remain on screen.
