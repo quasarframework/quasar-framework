@@ -29,5 +29,5 @@
   },
   // Needed to avoid files copied into 'dist' folder (eg. a `.d.ts` file inside `src-ssr` folder)
   // to be evaluated by TS when their original files has been updated
-  "exclude": ["/dist", ".quasar", "node_modules"]
+  "exclude": ["/dist", ".quasar", "node_modules", "src-cordova/platforms", "src-cordova/www"]
 }
