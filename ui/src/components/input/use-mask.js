@@ -1,4 +1,4 @@
-import { ref, watch, nextTick } from 'vue'
+import { ref, computed, watch, nextTick } from 'vue'
 
 import { shouldIgnoreKey } from '../../utils/private/key-composition.js'
 
@@ -48,6 +48,10 @@ export default function (props, emit, emitValue, inputRef) {
 
   const hasMask = ref(null)
   const innerValue = ref(getInitialMaskedValue())
+
+  const isTypeText = computed(() =>
+    props.autogrow === true || ['textarea', 'text', 'search', 'url', 'tel', 'password'].includes(props.type)
+  )
 
   watch(() => props.type, updateMaskInternals)
 
@@ -106,7 +110,7 @@ export default function (props, emit, emitValue, inputRef) {
   function updateMaskInternals () {
     hasMask.value = props.mask !== void 0
       && props.mask.length > 0
-      && [ 'text', 'search', 'url', 'tel', 'password' ].includes(props.type)
+      && isTypeText === true
 
     if (hasMask.value === false) {
       computedUnmask = void 0
