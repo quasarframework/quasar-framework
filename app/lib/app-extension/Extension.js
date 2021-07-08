@@ -176,7 +176,9 @@ module.exports = class Extension {
 
     const prompts = await this.__getPrompts()
 
+    const internal = extensionJson.getInternal(this.extId)
     extensionJson.set(this.extId, prompts)
+    extensionJson.setInternal(internal)
 
     // run extension install
     const hooks = await this.__runInstallScript(prompts)
