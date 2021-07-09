@@ -52,7 +52,7 @@
       <div class="row flex-center q-my-md q-gutter-md">
         <router-link
           to="/components/button-functional?q=0&a=0"
-          v-slot="{ href, route, navigate, isActive, isExactActive }"
+          v-slot="{ href, route, isActive, isExactActive }"
         >
           <q-btn
             :flat="isActive !== true"
@@ -67,7 +67,7 @@
         </router-link>
         <router-link
           to="/components/button-functional?q=1"
-          v-slot="{ href, route, navigate, isActive, isExactActive }"
+          v-slot="{ href, route, isActive, isExactActive }"
         >
           <q-btn
             :flat="isActive !== true"
@@ -82,7 +82,7 @@
         </router-link>
         <router-link
           to="/components/button-functional?q=1&a=1"
-          v-slot="{ href, route, navigate, isActive, isExactActive }"
+          v-slot="{ href, route, isActive, isExactActive }"
         >
           <q-btn
             :flat="isActive !== true"
@@ -97,7 +97,7 @@
         </router-link>
         <router-link
           to="/components/button-functional?q=1&a=2"
-          v-slot="{ href, route, navigate, isActive, isExactActive }"
+          v-slot="{ href, route, isActive, isExactActive }"
         >
           <q-btn
             :flat="isActive !== true"
@@ -112,7 +112,7 @@
         </router-link>
         <router-link
           to="/components/button-functional?q=2"
-          v-slot="{ href, route, navigate, isActive, isExactActive }"
+          v-slot="{ href, route, isActive, isExactActive }"
         >
           <q-btn
             :flat="isActive !== true"

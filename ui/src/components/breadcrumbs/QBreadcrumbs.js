@@ -60,14 +60,19 @@ export default Vue.extend({
     nodes.forEach(comp => {
       if (comp.tag !== void 0 && comp.tag.endsWith('-QBreadcrumbsEl')) {
         const middle = els < len
+        const disabled = [true, ''].indexOf(comp.componentOptions.propsData.disable) > -1
         els++
+
+        if (disabled !== true) {
+          comp.componentOptions.propsData.disable = middle !== true
+        }
 
         child.push(h('div', {
           staticClass: 'flex items-center',
-          class: middle ? this.activeClass : 'q-breadcrumbs--last'
+          class: middle === true ? (disabled === true ? 'q-breadcrumbs__el--inactive' : this.activeClass) : 'q-breadcrumbs__el--last'
         }, [ comp ]))
 
-        if (middle) {
+        if (middle === true) {
           child.push(h('div', {
             staticClass: 'q-breadcrumbs__separator', class: this.sepClass
           }, separator()))
